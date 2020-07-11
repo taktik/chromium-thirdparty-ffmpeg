@@ -676,6 +676,8 @@ UNKNOWN_WHITELIST = [
     os.path.join('libavcodec', 'jrevdct.c'),
     os.path.join('libavcodec', 'jfdctfst.c'),
     os.path.join('libavcodec', 'jfdctint_template.c'),
+    os.path.join('libavfilter', 'all_channel_layouts.inc'),
+    os.path.join('libavfilter', 'filter_list.c'),
 ]
 
 # Regex to find lines matching #include "some_dir\some_file.h".

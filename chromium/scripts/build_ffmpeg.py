@@ -475,6 +475,7 @@ def BuildFFmpeg(target_os, target_arch, host_os, host_arch, parallel_jobs,
     libraries = [
         os.path.join('libavcodec', GetDsoName(target_os, 'avcodec', 58)),
         os.path.join('libavformat', GetDsoName(target_os, 'avformat', 58)),
+        os.path.join('libavfilter', GetDsoName(target_os, 'avfilter', 7)),
         os.path.join('libavutil', GetDsoName(target_os, 'avutil', 56)),
     ]
     PrintAndCheckCall(
@@ -494,10 +495,11 @@ def BuildFFmpeg(target_os, target_arch, host_os, host_arch, parallel_jobs,
           'Target arch : %s\n' % (host_os, target_os, host_arch, target_arch))
 
   # These rewrites are necessary to faciliate various Chrome build options.
-  post_make_rewrites = [
-      (r'(#define FFMPEG_CONFIGURATION .*)',
-       r'/* \1 -- elide long configuration string from binary */')
-  ]
+  #post_make_rewrites = [
+  #    (r'(#define FFMPEG_CONFIGURATION .*)',
+  #     r'/* \1 -- elide long configuration string from binary */')
+  #]
+  post_make_rewrites = []
 
   if target_arch in ('arm', 'arm-neon', 'arm64'):
     post_make_rewrites += [
@@ -595,6 +597,7 @@ def ConfigureAndBuild(target_arch, target_os, host_os, host_arch, parallel_jobs,
       '--disable-static',
       '--enable-avcodec',
       '--enable-avformat',
+      '--enable-avfilter',
       '--enable-avutil',
       '--enable-fft',
       '--enable-rdft',
@@ -629,6 +632,7 @@ def ConfigureAndBuild(target_arch, target_os, host_os, host_arch, parallel_jobs,
       '--enable-decoder=pcm_s16be,pcm_s24be,pcm_mulaw,pcm_alaw',
       '--enable-demuxer=ogg,matroska,wav,flac,mp3,mov',
       '--enable-parser=opus,vorbis,flac,mpegaudio,vp9',
+      '--enable-filter=yadif',
 
       # Setup include path so Chromium's libopus can be used.
       '--extra-cflags=-I' + os.path.join(CHROMIUM_ROOT_DIR,

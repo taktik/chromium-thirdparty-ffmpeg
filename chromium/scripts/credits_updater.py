@@ -206,6 +206,7 @@ LICENSE_TEXTS = {
         os.path.join(LICENSE_FOLDER, 'oggparse_ahlberg_rullgayrd_2005.txt'),
 }
 
+IGNORED_FILES = [ 'libavfilter/filter_list.c', 'libavfilter/all_channel_layouts.inc' ]
 
 class CreditsUpdater(object):
   """CreditsUpdater parses license headers for files supplied via ProcessFile.
@@ -248,8 +249,10 @@ class CreditsUpdater(object):
       file_path = os.path.abspath(os.path.join(self.source_dir, file_path))
 
     comment_lines = ExtractFirstCommentBlock(file_path)
-    if not comment_lines:
-      self.difficult_files.append(file_path)
+    if (not comment_lines):
+      rel_file_path = os.path.relpath(file_path, os.path.abspath(self.source_dir))
+      if not (rel_file_path in IGNORED_FILES):
+        self.difficult_files.append(file_path)
       return
 
     # Try to pull out customizations in first few lines of license header before
